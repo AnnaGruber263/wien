@@ -55,6 +55,17 @@ async function loadSights(url) {
   let response = await fetch(url);
   let geojson = await response.json();
   console.log(geojson);
-  L.geoJSON(geojson).addTo(themaLayer.sights);
+  L.geoJSON(geojson, {
+    onEachFeature: function (feature, layer) {
+      console.log(feature);
+      console.log(feature.properties.NAME);
+      layer.bindPopup(`
+      <img src="${feature.properties.THUMBNAIL}" alt="*">
+      <h4><a href="${feature.properties.WEITERE_INF}"
+      target="wien">${feature.properties.NAME}</h4>
+      <address>${feature.properties.ADRESSE}</address>
+      `);
+    }
+  }).addTo(themaLayer.sights);
 }
 loadSights("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:SEHENSWUERDIGOGD&srsName=EPSG:4326&outputFormat=json")
