@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../nz/nz"
+		},
+		{
+			"name": "top",
+			"path": "../top/top"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "top"
+	}
+}
