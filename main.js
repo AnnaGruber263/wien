@@ -86,7 +86,12 @@ async function loadLines(url) {
   L.geoJSON(geojson, {
     onEachFeature: function (feature, layer) {
       console.log(feature);
+      console.log(feature.properties.LINE_NAME);
       layer.bindPopup(`
+      <h4><i class="fa-solid fa-bus"></i> ${feature.properties.LINE_NAME}</h4>
+      <p><i class="fa-regular fa-circle-stop"></i> ${feature.properties.FROM_NAME}</p>
+      <i class="fa-solid fa-arrow-down"></i>
+      <p><i class="fa-regular fa-circle-stop"></i> ${feature.properties.TO_NAME}</p>
       `);
     }
   }).addTo(themaLayer.lines);
@@ -101,7 +106,10 @@ async function loadStops(url) {
   L.geoJSON(geojson, {
     onEachFeature: function (feature, layer) {
       console.log(feature);
+      console.log(feature.properties.LINE_NAME)
       layer.bindPopup(`
+      <h4><i class="fa-solid fa-bus"></i> ${feature.properties.LINE_NAME}</h4>
+      <p>${feature.properties.STAT_ID} ${feature.properties.STAT_NAME}</p>
       `);
     }
   }).addTo(themaLayer.stops);
@@ -116,12 +124,17 @@ async function loadZones(url) {
   L.geoJSON(geojson, {
     onEachFeature: function (feature, layer) {
       console.log(feature);
+      console.log(feature.properties.ADRESSE)
       layer.bindPopup(`
+      <h4>Fußgängerzone ${feature.properties.ADRESSE}</h4>
+      <p><i class="fa-regular fa-clock"></i> ${feature.properties.ZEITRAUM}</p>
+      <p><i class="fa-solid fa-circle-info"></i> ${feature.properties.AUSN_TXT}</p>
       `);
     }
   }).addTo(themaLayer.zones);
 }
 loadZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:FUSSGEHERZONEOGD&srsName=EPSG:4326&outputFormat=json")
+
 
 async function loadHotels(url) {
   console.log("Loading", url);
@@ -131,9 +144,18 @@ async function loadHotels(url) {
   L.geoJSON(geojson, {
     onEachFeature: function (feature, layer) {
       console.log(feature);
+      console.log(feature.properties.BETRIEB)
       layer.bindPopup(`
+      <h4>${feature.properties.BETRIEB}</h4>
+      <p><b>${feature.properties.BETRIEBSART_TXT}</b></p>
+      <i class="fa-solid fa-grip-lines"></i>
+      <p>Addr.: ${feature.properties.ADRESSE}</p>
+      <p>Tel.: ${feature.properties.KONTAKT_TEL}</p>
+      <p>Mail: ${feature.properties.KONTAKT_EMAIL}</p>
+      <a href="${feature.properties.WEBLINK1}">Homepage</a>
       `);
     }
   }).addTo(themaLayer.hotels);
 }
 loadHotels("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:UNTERKUNFTOGD&srsName=EPSG:4326&outputFormat=json")
+
