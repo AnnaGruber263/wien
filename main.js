@@ -146,9 +146,8 @@ async function loadHotels(url) {
       console.log(feature);
       console.log(feature.properties.BETRIEB)
       layer.bindPopup(`
-      <h4>${feature.properties.BETRIEB}</h4>
-      <p><b>${feature.properties.BETRIEBSART_TXT}</b></p>
-      <i class="fa-solid fa-grip-lines"></i>
+      <h4>${feature.properties.BETRIEB}</h4><b>${feature.properties.BETRIEBSART_TXT}</b>
+      <hr></hr>
       <p>Addr.: ${feature.properties.ADRESSE}</p>
       <p>Tel.: ${feature.properties.KONTAKT_TEL}</p>
       <p>Mail: ${feature.properties.KONTAKT_EMAIL}</p>
