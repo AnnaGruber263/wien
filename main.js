@@ -15,11 +15,13 @@ let startLayer = L.tileLayer.provider("BasemapAT.grau");
 startLayer.addTo(map);
 
 let themaLayer = {
-  sights: L.featureGroup().addTo(map),
+  sights: L.featureGroup(),
   lines: L.featureGroup(),
   stops: L.featureGroup(),
   zones: L.featureGroup(),
-  hotels: L.featureGroup(),
+  hotels: L.markerClusterGroup({
+    disableClusteringAtZoom: 17
+  }).addTo(map),
 }
 // Hintergrundlayer
 L.control
@@ -67,7 +69,7 @@ async function loadSights(url) {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {
         icon: L.icon({
-          iconUrl: "photo.png",
+          iconUrl: "icons/photo.png",
           iconAnchor: [16, 37],
           popupAnchor: [0, -37]
         })
@@ -136,6 +138,15 @@ async function loadStops(url) {
   let geojson = await response.json();
   console.log(geojson);
   L.geoJSON(geojson, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {
+        icon: L.icon({
+          iconUrl: `icons/bus_${feature.properties.LINE_ID}.png`,
+          iconAnchor: [16, 37],
+          popupAnchor: [0, -37]
+        })
+      })
+    },
     onEachFeature: function (feature, layer) {
       console.log(feature);
       console.log(feature.properties.LINE_NAME)
@@ -182,16 +193,52 @@ async function loadHotels(url) {
   let geojson = await response.json();
   console.log(geojson);
   L.geoJSON(geojson, {
+    pointToLayer: function (feature, latlng) {
+      let hotelcat = feature.properties.KATEGORIE_TXT;
+      console.log(hotelcat)
+      let icon
+      if (hotelcat == "nicht kategorisiert") {
+        icon = "icons/hotel_0star.png";
+      }
+      else if (hotelcat == "1*") {
+        icon = "icons/hotel_1stars.png";
+      }
+      else if (hotelcat == "2*") {
+        icon = "icons/hotel_2stars.png";
+      }
+      else if (hotelcat == "3*") {
+        icon = "icons/hotel_3stars.png";
+      }
+      else if (hotelcat == "4*") {
+        icon = "icons/hotel_4stars.png";
+      }
+      else if (hotelcat == "5*") {
+        icon = "icons/hotel_5stars.png";
+      }
+      else {
+        //console.log(hotelcat);
+        iconName = "hotel_0star"
+        // gibt es irgendwann 6*?
+      }
+      return L.marker(latlng, {
+        icon: L.icon({
+          iconUrl: icon,
+          iconAnchor: [16, 37],
+          popupAnchor: [0, -37]
+        })
+      });
+    },
     onEachFeature: function (feature, layer) {
       console.log(feature);
       console.log(feature.properties.BETRIEB)
       layer.bindPopup(`
-      <h4>${feature.properties.BETRIEB}</h4><b>${feature.properties.BETRIEBSART_TXT}</b>
-      <hr></hr>
-      <p>Addr.: ${feature.properties.ADRESSE}</p>
-      Tel.: <a href="tel: ${feature.properties.KONTAKT_TEL}">${feature.properties.KONTAKT_TEL}</a>
-      <br><a href="${feature.properties.KONTAKT_EMAIL}" target="wien"> ${feature.properties.KONTAKT_EMAIL}</a></br>
-      <a href="${feature.properties.WEBLINK1}">Homepage</a>
+      <h3>${feature.properties.BETRIEB}</h3>
+      <h4>${feature.properties.BETRIEBSART_TXT} ${feature.properties.KATEGORIE_TXT}</h4>
+      <hr>
+      Addr.: ${feature.properties.ADRESSE}<br>
+      Tel.: <a href="tel:${feature.properties.KONTAKT_TEL}">${feature.properties.KONTAKT_TEL}</a><br>
+      <a href="mailto:${feature.properties.KONTAKT_EMAIL}">${feature.properties.KONTAKT_EMAIL}</a><br>
+      <a href="${feature.properties.WEBLINK1}" target="wien">Homepage</a><br>
       `);
     }
   }).addTo(themaLayer.hotels);
