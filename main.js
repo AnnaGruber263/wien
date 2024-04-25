@@ -122,6 +122,14 @@ async function loadZones(url) {
   let geojson = await response.json();
   console.log(geojson);
   L.geoJSON(geojson, {
+    style: function (feature) {
+      return {
+        color: "#F012BE",
+        weight: 1,
+        opacity: 0.4,
+        fillOpacity: 0.1,
+      };
+    },
     onEachFeature: function (feature, layer) {
       console.log(feature);
       console.log(feature.properties.ADRESSE)
