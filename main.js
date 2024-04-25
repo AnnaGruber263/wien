@@ -15,11 +15,11 @@ let startLayer = L.tileLayer.provider("BasemapAT.grau");
 startLayer.addTo(map);
 
 let themaLayer = {
-  sights: L.featureGroup().addTo(map),
-  lines: L.featureGroup().addTo(map),
-  stops: L.featureGroup().addTo(map),
+  sights: L.featureGroup(),
+  lines: L.featureGroup(),
+  stops: L.featureGroup(),
   zones: L.featureGroup().addTo(map),
-  hotels: L.featureGroup().addTo(map),
+  hotels: L.featureGroup(),
 }
 // Hintergrundlayer
 L.control
@@ -127,8 +127,8 @@ async function loadZones(url) {
       console.log(feature.properties.ADRESSE)
       layer.bindPopup(`
       <h4>Fußgängerzone ${feature.properties.ADRESSE}</h4>
-      <p><i class="fa-regular fa-clock"></i> ${feature.properties.ZEITRAUM}</p>
-      <p><i class="fa-solid fa-circle-info"></i> ${feature.properties.AUSN_TXT}</p>
+      <p><i class="fa-regular fa-clock"></i> ${feature.properties.ZEITRAUM || "dauerhaft"}</p>
+      <p><i class="fa-solid fa-circle-info"></i> ${feature.properties.AUSN_TEXT || "ohne Ausnahme"}</p>
       `);
     }
   }).addTo(themaLayer.zones);
@@ -149,8 +149,8 @@ async function loadHotels(url) {
       <h4>${feature.properties.BETRIEB}</h4><b>${feature.properties.BETRIEBSART_TXT}</b>
       <hr></hr>
       <p>Addr.: ${feature.properties.ADRESSE}</p>
-      <p>Tel.: ${feature.properties.KONTAKT_TEL}</p>
-      <p>Mail: ${feature.properties.KONTAKT_EMAIL}</p>
+      Tel.: <a href="tel: ${feature.properties.KONTAKT_TEL}">${feature.properties.KONTAKT_TEL}</a>
+      <br><a href="${feature.properties.KONTAKT_EMAIL}" target="wien"> ${feature.properties.KONTAKT_EMAIL}</a></br>
       <a href="${feature.properties.WEBLINK1}">Homepage</a>
       `);
     }
